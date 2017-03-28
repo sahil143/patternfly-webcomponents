@@ -97,14 +97,15 @@ export class PfDropdown extends HTMLElement {
     let self = this;
     let items = this.querySelectorAll('ul.dropdown-menu li a');
     for (let i = 0; i < items.length; i++) {
-      items[i].onclick = function (event) {
+      items[i].addEventListener('click', function (event) {
         if (items[i].parentNode.classList.contains('disabled')) {
+          event.stopPropagation();
           event.preventDefault();
           return false;
         }
         self.dispatchEvent(new CustomEvent('itemClicked', {}));
         return true;
-      };
+      });
     }
   }
   /**
