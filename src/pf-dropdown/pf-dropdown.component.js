@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 
 export class PfDropdown extends HTMLElement {
