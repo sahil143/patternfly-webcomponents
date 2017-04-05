@@ -1,23 +1,5 @@
 /**
- * <b>&lt;pf-dropdown&gt;</b> element for Patternfly Web Components
- *
- * <pf-dropdown id="dropdown1"><div class="dropdown">
- *    <button class="btn btn-primary dropdown-toggle" type="button" id="dropdown2" data-toggle="dropdown" aria-haspopup="true"
- *      aria-expanded="false">
- *      Dropdown
- *      <span class="caret"></span>
- *      </button>
- *      <ul class="dropdown-menu">
- *        <li class="dropdown-header">Header</li>
- *        <li><a href="#">Item 1</a></li>
- *        <li><a href="#">Item 2</a></li>
- *        <li class="disabled"><a href="#">Item 3</a></li>
- *        <li><a href="#">Item 4</a></li>
- *        <li class="divider"></li>
- *        <li><a href="#">Item 5</a></li>
- *      </ul>
- *      </div>
- *  </pf-dropdown>
+ * 
  */
 
 export class PfDropdown extends HTMLElement {
