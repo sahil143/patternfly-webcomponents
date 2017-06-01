@@ -33,3 +33,6 @@ require('pf-hello.component.js');
 
 /** PF Dropdown **/
 require('pf-dropdown.component.js');
+
+/** PF Touchspin **/
+require('pf-touchspin.component.js')
