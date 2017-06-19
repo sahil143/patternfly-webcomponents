@@ -2748,6 +2748,7 @@
 	      this._maxBoostedStep = this.getAttribute('maxboostedstep') ? this.getAttribute('maxboostedstep') : false;
 	      this._stepInterval = this.getAttribute('stepinterval') ? this.getAttribute('stepinterval') : 100;
 	      this._stepIntervalDelay = this.getAttribute('stepintervaldelay') ? this.getAttribute('stepintervaldelay') : 500;
+	      this._spinning = false;
 	    }
 	  }, {
 	    key: 'connectedCallback',
@@ -2756,7 +2757,7 @@
 	      var input = this.querySelector('input');
 	      var down = this.querySelector('.bootstrap-touchspin-down');
 	      var up = this.querySelector('.bootstrap-touchspin-up');
-
+	      this.spincount = 0;
 	      this.init();
 
 	      input.addEventListener('keydown', function (event) {
@@ -2786,7 +2787,7 @@
 	      });
 
 	      down.addEventListener('mousedown', function (event) {
-	        if (input.classList.contains('disabled')) {
+	        if (input.classList.contains(':disabled')) {
 	          return;
 	        }
 
@@ -2797,13 +2798,49 @@
 	        event.stopPropagation();
 	      });
 
-	      down.addEventListener('mouseup', function (event) {
-	        if (!this._spinning) {
+	      document.addEventListener('mouseup', function () {
+
+	        event.preventDefault();
+	        clearInterval(this._downSpinTimer);
+	        self._stop();
+	      });
+
+	      up.addEventListener('mousedown', function (event) {
+	        if (input.classList.contains(':disabled')) {
 	          return;
 	        }
 
-	        event.selfPropagation();
+	        self._up();
+	        self._upSpin();
+
+	        event.preventDefault();
+	        event.stopPropagation();
+	      });
+
+	      down.addEventListener('mouseout', function (event) {
+
+	        event.stopPropagation();
 	        self._stop();
+	      });
+
+	      up.addEventListener('mouseout', function (event) {
+
+	        event.stopPropagation();
+	        self._stop();
+	      });
+
+	      document.addEventListener('wheel', function (event) {
+	        var delta = -event.deltaY;
+	        if (input !== document.activeElement) {
+	          return;
+	        }
+	        event.stopPropagation();
+	        event.preventDefault();
+	        if (delta < 0) {
+	          self._down();
+	        } else {
+	          self._up();
+	        }
 	      });
 	    }
 
@@ -2835,20 +2872,73 @@
 
 	  /**
 	   *
-	   * @param {*} value
 	   */
 
 
 	  _createClass(PfTouchspin, [{
+	    key: '_checkValue',
+	    value: function _checkValue() {
+	      var val, parsedval, returnval;
+
+	      val = this.querySelector('input').value;
+
+	      if (val === '') {
+	        if (this.replacementval !== '') {
+	          this.querySelector('input').value = this.replacementval;
+	        }
+	        return;
+	      }
+
+	      if (this._decimals > 0 && val === '.') {
+	        return;
+	      }
+
+	      parsedval = parseFloat(val);
+
+	      if (isNaN(parsedval)) {
+	        if (this.replacementval !== '') {
+	          parsedval = this.replacementval;
+	        } else {
+	          parsedval = 0;
+	        }
+	      }
+
+	      returnval = parsedval;
+
+	      if (parsedval.toString() !== val) {
+	        returnval = parsedval;
+	      }
+
+	      if (parsedval < this.min) {
+	        returnval = this.min;
+	      }
+
+	      if (parsedval > this.max) {
+	        returnval = this.max;
+	      }
+
+	      //returnval = _forcestepdivisibility(returnval);
+
+	      if (Number(val).toString() !== returnval.toString()) {
+	        this.querySelector('input').value = returnval;
+	      }
+	    }
+
+	    /**
+	     *
+	     * @param {*} value
+	     */
+
+	  }, {
 	    key: '_boostedStep',
 	    value: function _boostedStep(value) {
 	      if (!this._booster) {
 	        return this._step;
 	      }
-	      if (isNaN(this._spincount)) {
-	        this._spincount = 0;
+	      if (isNaN(this.spincount)) {
+	        this.spincount = 0;
 	      }
-	      var boosted = Math.pow(2, Math.floor(this._spincount / this._boostat)) * this._step;
+	      var boosted = Math.pow(2, Math.floor(this.spincount / this._boostat)) * this._step;
 
 	      if (this._maxBoostedStep) {
 	        if (boosted > this._maxBoostedstep) {
@@ -2869,6 +2959,9 @@
 	    value: function _up() {
 	      var val = void 0,
 	          boostedStep = void 0;
+
+	      this._checkValue();
+
 	      val = parseFloat(this.querySelector('input').value);
 	      if (isNaN(val)) {
 	        val = 0;
@@ -2896,6 +2989,9 @@
 	    value: function _down() {
 	      var val = void 0,
 	          boostedStep = void 0;
+
+	      this._checkValue();
+
 	      val = parseFloat(this.querySelector('input').value);
 	      if (isNaN(val)) {
 	        val = 0;
@@ -2924,7 +3020,7 @@
 	      var self = this;
 	      this._stop();
 
-	      this._spincount = 0;
+	      this.spincount = 0;
 	      this._spinning = 'down';
 
 	      this.dispatchEvent(new CustomEvent('pf-touchspin.startspin', {}));
@@ -2932,7 +3028,7 @@
 
 	      this._downDelayTimeout = setTimeout(function () {
 	        this._downSpinTimer = setInterval(function () {
-	          this._spincount++;
+	          self.spincount++;
 	          self._down();
 	        }, this._stepInterval);
 	      }, this._stepIntervalDelay);
@@ -2948,7 +3044,7 @@
 	      var self = this;
 	      this._stop();
 
-	      this._spincount = 0;
+	      this.spincount = 0;
 	      this._spinning = 'up';
 
 	      this.dispatchEvent(new CustomEvent('pf-touchspin.startspin', {}));
@@ -2956,7 +3052,7 @@
 
 	      this._upDelayTimeout = setTimeout(function () {
 	        this._upSpinTimer = setInterval(function () {
-	          this._spincount++;
+	          self.spincount++;
 	          self._up();
 	        }, this._stepInterval);
 	      }, this._stepIntervalDelay);
@@ -2987,7 +3083,7 @@
 	          break;
 	      }
 
-	      this._spincount = 0;
+	      this.spincount = 0;
 	      this._spinning = false;
 	    }
 	  }]);
