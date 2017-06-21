@@ -15,7 +15,27 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 /**
  * <b>&lt;pf-touchspin&gt;</b> element for Patternfly Web Components
  *
- * <pf-touchspin></pf-touchspin>
+ * <pf-touchspin id="touchspin" class="input-group bootstrap-touchspin" decimals="2" step="0.1">
+ *  <span class="input-group-btn">
+ *    <button class="btn btn-default bootstrap-touchspin-down" type="button">-</button>
+ *  </span>
+ *  <input value="50.00" type="text" class="form-control">
+ *  <span class="input-group-btn">
+ *    <button class="btn btn-default bootstrap-touchspin-up" type="button">+</button>
+ *  </span>
+ * </pf-touchspin>
+ *
+ * @prop {number} min the minimum value
+ * @prop {number} max the maximum value
+ * @prop {number} step Increment/Decrement in value on up/down
+ * @prop {number} decimals decimal points in value
+ * @prop {boolean} booster if true, spinner will become faster continousally on holding down the button
+ * @prop {number} boostat boost at every nth step
+ * @prop {number} maxboostedstep maximum step when boosted
+ * @prop {number} stepinterval refresh reate of spinner in millisecond
+ * @prop {number} stepintervaldelay delay before sppiner starts to spin(millisecond)
+ * @prop {string} forcestepdivisibility force the value to be divisible by step value: 'none' | 'round' | 'floor' | 'ceil'
+ *
  */
 
 var PfTouchspin = exports.PfTouchspin = function (_HTMLElement) {
@@ -24,17 +44,18 @@ var PfTouchspin = exports.PfTouchspin = function (_HTMLElement) {
   _createClass(PfTouchspin, [{
     key: 'init',
     value: function init() {
-      this._min = this.getAttribute('min') ? this.getAttribute('min') : 0;
-      this._max = this.getAttribute('max') ? this.getAttribute('max') : 100;
-      this._initVal = this.getAttribute('initval') ? this.getAttribute('initval') : "";
-      this._step = this.getAttribute('step') ? this.getAttribute('step') : 1;
-      this._decimals = this.getAttribute('decimals') ? this.getAttribute('decimals') : 0;
+      this._min = parseFloat(this.getAttribute('min')) ? this.getAttribute('min') : 0;
+      this._max = parseFloat(this.getAttribute('max')) ? this.getAttribute('max') : 100;
+      this._step = parseFloat(this.getAttribute('step')) ? this.getAttribute('step') : 1;
+      this._decimals = parseInt(this.getAttribute('decimals')) ? this.getAttribute('decimals') : 0;
       this._booster = this.getAttribute('booster') ? this.getAttribute('booster') : true;
-      this._boostat = this.getAttribute('boostat') ? this.getAttribute('boostat') : 10;
+      this._boostat = parseInt(this.getAttribute('boostat')) ? this.getAttribute('boostat') : 10;
       this._maxBoostedStep = this.getAttribute('maxboostedstep') ? this.getAttribute('maxboostedstep') : false;
       this._stepInterval = this.getAttribute('stepinterval') ? this.getAttribute('stepinterval') : 100;
       this._stepIntervalDelay = this.getAttribute('stepintervaldelay') ? this.getAttribute('stepintervaldelay') : 500;
+      this._forceStepDivisibility = this.getAttribute('forcestepdivisibility') ? this.getAttribute('forcestepdivisibility') : 'round';
       this._spinning = false;
+      this.spincount = 0;
     }
   }, {
     key: 'connectedCallback',
@@ -43,9 +64,9 @@ var PfTouchspin = exports.PfTouchspin = function (_HTMLElement) {
       var input = this.querySelector('input');
       var down = this.querySelector('.bootstrap-touchspin-down');
       var up = this.querySelector('.bootstrap-touchspin-up');
-      this.spincount = 0;
       this.init();
 
+      // support for up/down keys
       input.addEventListener('keydown', function (event) {
         var keycode = event.keyCode ? event.keyCode : event.which;
         if (keycode === 38) {
@@ -72,11 +93,11 @@ var PfTouchspin = exports.PfTouchspin = function (_HTMLElement) {
         }
       });
 
+      // support for click foe down spin
       down.addEventListener('mousedown', function (event) {
-        if (input.classList.contains(':disabled')) {
+        if (input.classList.contains('disabled')) {
           return;
         }
-
         self._down();
         self._downSpin();
 
@@ -84,15 +105,14 @@ var PfTouchspin = exports.PfTouchspin = function (_HTMLElement) {
         event.stopPropagation();
       });
 
-      document.addEventListener('mouseup', function () {
+      document.addEventListener('mouseup', function (event) {
 
         event.preventDefault();
-        clearInterval(this._downSpinTimer);
         self._stop();
       });
 
       up.addEventListener('mousedown', function (event) {
-        if (input.classList.contains(':disabled')) {
+        if (input.classList.contains('disabled')) {
           return;
         }
 
@@ -103,8 +123,8 @@ var PfTouchspin = exports.PfTouchspin = function (_HTMLElement) {
         event.stopPropagation();
       });
 
+      // stop spinning if mouse is not over buttons
       down.addEventListener('mouseout', function (event) {
-
         event.stopPropagation();
         self._stop();
       });
@@ -115,6 +135,7 @@ var PfTouchspin = exports.PfTouchspin = function (_HTMLElement) {
         self._stop();
       });
 
+      //support for mouse scroll
       document.addEventListener('wheel', function (event) {
         var delta = -event.deltaY;
         if (input !== document.activeElement) {
@@ -157,23 +178,37 @@ var PfTouchspin = exports.PfTouchspin = function (_HTMLElement) {
   }
 
   /**
+   * force the valur to be divisible by step
    *
+   * @param {number} value
    */
 
 
   _createClass(PfTouchspin, [{
+    key: '_stepDivisibility',
+    value: function _stepDivisibility(value) {
+      switch (this._forceStepDivisibility) {
+        case 'round':
+          return (Math.round(value / this._step) * this._step).toFixed(this._decimals);
+        case 'floor':
+          return (Math.floor(value / this._step) * this._step).toFixed(this._decimals);
+        case 'ceil':
+          return (Math.ceil(value / this._step) * this._step).toFixed(this._decimals);
+        default:
+          return value;
+      }
+    }
+
+    /**
+     * check the value before change in value
+     */
+
+  }, {
     key: '_checkValue',
     value: function _checkValue() {
       var val, parsedval, returnval;
 
       val = this.querySelector('input').value;
-
-      if (val === '') {
-        if (this.replacementval !== '') {
-          this.querySelector('input').value = this.replacementval;
-        }
-        return;
-      }
 
       if (this._decimals > 0 && val === '.') {
         return;
@@ -182,11 +217,7 @@ var PfTouchspin = exports.PfTouchspin = function (_HTMLElement) {
       parsedval = parseFloat(val);
 
       if (isNaN(parsedval)) {
-        if (this.replacementval !== '') {
-          parsedval = this.replacementval;
-        } else {
-          parsedval = 0;
-        }
+        parsedval = 0;
       }
 
       returnval = parsedval;
@@ -203,7 +234,7 @@ var PfTouchspin = exports.PfTouchspin = function (_HTMLElement) {
         returnval = this.max;
       }
 
-      //returnval = _forcestepdivisibility(returnval);
+      returnval = this._stepDivisibility(returnval);
 
       if (Number(val).toString() !== returnval.toString()) {
         this.querySelector('input').value = returnval;
@@ -211,8 +242,9 @@ var PfTouchspin = exports.PfTouchspin = function (_HTMLElement) {
     }
 
     /**
+     * boost the value
      *
-     * @param {*} value
+     * @param {number} value
      */
 
   }, {
@@ -220,9 +252,6 @@ var PfTouchspin = exports.PfTouchspin = function (_HTMLElement) {
     value: function _boostedStep(value) {
       if (!this._booster) {
         return this._step;
-      }
-      if (isNaN(this.spincount)) {
-        this.spincount = 0;
       }
       var boosted = Math.pow(2, Math.floor(this.spincount / this._boostat)) * this._step;
 
@@ -232,7 +261,6 @@ var PfTouchspin = exports.PfTouchspin = function (_HTMLElement) {
           value = Math.round(value / boosted) * boosted;
         }
       }
-
       return Math.max(this._step, boosted);
     }
 
@@ -263,11 +291,13 @@ var PfTouchspin = exports.PfTouchspin = function (_HTMLElement) {
         this._stop();
       }
 
-      this.querySelector('input').value = val.toFixed(this._decimals);
+      val = parseFloat(val).toFixed(this._decimals);
+
+      this.querySelector('input').value = val;
     }
 
     /**
-     *
+     *  decrement input value
      */
 
   }, {
@@ -293,10 +323,13 @@ var PfTouchspin = exports.PfTouchspin = function (_HTMLElement) {
         this._stop();
       }
 
-      this.querySelector('input').value = val.toFixed(this._decimals);
+      val = parseFloat(val).toFixed(this._decimals);
+
+      this.querySelector('input').value = val;
     }
 
     /**
+     * Decremental spinner
      *
      */
 
@@ -313,15 +346,15 @@ var PfTouchspin = exports.PfTouchspin = function (_HTMLElement) {
       this.dispatchEvent(new CustomEvent('pf-touchspin.startdownspin', {}));
 
       this._downDelayTimeout = setTimeout(function () {
-        this._downSpinTimer = setInterval(function () {
+        self._downSpinTimer = setInterval(function () {
           self.spincount++;
           self._down();
-        }, this._stepInterval);
+        }, self._stepInterval);
       }, this._stepIntervalDelay);
     }
 
     /**
-     *
+     * Incremental spinner
      */
 
   }, {
@@ -337,21 +370,21 @@ var PfTouchspin = exports.PfTouchspin = function (_HTMLElement) {
       this.dispatchEvent(new CustomEvent('pf-touchspin.startupspin', {}));
 
       this._upDelayTimeout = setTimeout(function () {
-        this._upSpinTimer = setInterval(function () {
+        self._upSpinTimer = setInterval(function () {
           self.spincount++;
           self._up();
-        }, this._stepInterval);
+        }, self._stepInterval);
       }, this._stepIntervalDelay);
     }
 
     /**
+     * Stop the spinner
      *
      */
 
   }, {
     key: '_stop',
     value: function _stop() {
-
       clearTimeout(this._downDelayTimeout);
       clearTimeout(this._upDelayTimeout);
       clearInterval(this._downSpinTimer);
