@@ -48,11 +48,11 @@
 	'use strict';
 
 	/* pf-touchspin webcomponent */
-	__webpack_require__(24);
+	__webpack_require__(31);
 
 /***/ },
 
-/***/ 24:
+/***/ 31:
 /***/ function(module, exports) {
 
 	'use strict';
