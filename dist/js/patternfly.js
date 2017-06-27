@@ -3809,6 +3809,11 @@
 	          self._up();
 	        }
 	      });
+
+	      this._bindEvents();
+
+	      this.initialized = true;
+	      this.dispatchEvent(new CustomEvent('initialized', {}));
 	    }
 
 	    /**
@@ -3838,13 +3843,41 @@
 	  }
 
 	  /**
-	   * force the valur to be divisible by step
 	   *
-	   * @param {number} value
 	   */
 
 
 	  _createClass(PfTouchspin, [{
+	    key: '_bindEvents',
+	    value: function _bindEvents() {
+	      this.addEventListener('pf-touchspin.downonce', function () {
+	        this._down();
+	      });
+
+	      this.addEventListener('pf-touchspin.uponce', function () {
+	        this._up();
+	      });
+
+	      this.addEventListener('pf-touchspin.downspin', function () {
+	        this._downSpin();
+	      });
+
+	      this.addEventListener('pf-touchspin.upspin', function () {
+	        this._upSpin();
+	      });
+
+	      this.addEventListener('pf-touchspin.stop', function () {
+	        this._stop();
+	      });
+	    }
+
+	    /**
+	     * force the valur to be divisible by step
+	     *
+	     * @param {number} value
+	     */
+
+	  }, {
 	    key: '_stepDivisibility',
 	    value: function _stepDivisibility(value) {
 	      switch (this._forceStepDivisibility) {
@@ -3866,7 +3899,9 @@
 	  }, {
 	    key: '_checkValue',
 	    value: function _checkValue() {
-	      var val, parsedval, returnval;
+	      var val = void 0,
+	          parsedval = void 0,
+	          returnval = void 0;
 
 	      val = this.querySelector('input').value;
 
@@ -3881,10 +3916,6 @@
 	      }
 
 	      returnval = parsedval;
-
-	      if (parsedval.toString() !== val) {
-	        returnval = parsedval;
-	      }
 
 	      if (parsedval < this.min) {
 	        returnval = this.min;
