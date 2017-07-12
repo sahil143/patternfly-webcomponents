@@ -1,5 +1,5 @@
 describe("PatternFly Popover Component Tests", function () {
-  var customElement, button;
+  let customElement, button;
 
   beforeEach(function () {
     customElement = document.createElement('pf-popover');
