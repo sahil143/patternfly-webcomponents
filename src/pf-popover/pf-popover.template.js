@@ -6,10 +6,4 @@ const PfPopoverTemplate = `
 </div>
 `;
 
-const pfPopoverDismissibleButton = `
-<button type="button" class="close">
-<span class="pficon pficon-close"></span>
-</button>`;
-
 export { PfPopoverTemplate as default };
-export { pfPopoverDismissibleButton as tmp };
