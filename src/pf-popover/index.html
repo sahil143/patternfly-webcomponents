@@ -1,25 +1,96 @@
 <!doctype html>
 <html>
+
 <head>
     <title>pf-popover example</title>
     <link rel="stylesheet" href="../../dist/css/patternfly.css">
     <link rel="stylesheet" href="../../dist/css/patternfly-additions.css">
     <link rel="stylesheet" href="../../dist/css/patternfly-webcomponents.css">
+    <style>
+        #div {
+            margin-top: 40px;
+        }
+    </style>
 </head>
-<body>
-<div class="container">
-    <div class="page-header">
-        <h1>popovers</h1>
-    </div>
-    <hr>
 
-    <pf-popover id="popover-right" placement="right" targetSelector="#btn-right" popoverTitle='Popover heading here' close="true">
-        popover text on right popover text on right popover text on right popover text on right popover text on right
-    </pf-popover>
-    <button id="btn-right" type="button" class="btn btn-primary" aria-describedby="popover-right">right</button>
-</div>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <h1>popovers</h1>
+        </div>
+        <hr>
+
+            <pf-popover id="popover-right" placement="right" targetSelector="#btn-right">
+                popover text on right popover text on right popover text on right popover text on right popover text on right
+            </pf-popover>
+            <button id="btn-right" type="button" class="btn btn-primary" aria-describedby="popover-right">use of public handler(toggle()) to open</button>
+
+        <div id="div">
+            <pf-popover id="popover-right" placement="right" targetSelector="#btn-right-t-c" popoverTitle="Popver on right" dismissible="true">
+                popover text on right popover text on right popover text on right popover text on right popover text on right
+            </pf-popover>
+            <button id="btn-right-t-c" type="button" class="btn btn-primary" aria-describedby="popover-right">Popover on right with title and close button</button>
+        </div>
+
+        <div id="div">
+            <pf-popover id="popover-right" placement="right" targetSelector="#btn-right-t" popoverTitle="Popver on right">
+                popover text on right popover text on right popover text on right popover text on right popover text on right
+            </pf-popover>
+            <button id="btn-right-t" type="button" class="btn btn-primary" aria-describedby="popover-right">popover on right with title</button>
+        </div>
+
+        <div id="div">
+            <pf-popover id="popover-right" placement="right" targetSelector="#btn-right-c" dismissible="true">
+                popover text on right popover text on right popover text on right popover text on right popover text on right
+            </pf-popover>
+            <button id="btn-right-c" type="button" class="btn btn-primary" aria-describedby="popover-right">popover on right with close button</button>
+        </div>
+
+        <div id="div">
+            <pf-popover id="popover-right" placement="right" targetSelector="#btn-right-n">
+                popover text on right popover text on right popover text on right popover text on right popover text on right
+            </pf-popover>
+            <button id="btn-right-n" type="button" class="btn btn-primary" aria-describedby="popover-right">Popover on right</button>
+        </div>
+
+        <hr>
+
+        <div id="div">
+            <pf-popover id="popover-left" placement="left" targetSelector="#btn-left-t-c" popoverTitle="Popover on left" dismissible="true">
+                popover text on left popover text on left popover text on left popover text on left popover text on left
+            </pf-popover>
+            <button id="btn-left-t-c" type="button" class="btn btn-primary" aria-describedby="popover-left">Popover on left with title and close button</button>
+        </div>
+
+        <hr>
+
+        <div id="div">
+            <pf-popover id="popover-top" placement="top" targetSelector="#btn-top-t-c" popoverTitle="Popover on top" dismissible="true">
+                popover text on top popover text on top popover text on top popover text on top popover text on top
+            </pf-popover>
+            <button id="btn-top-t-c" type="button" class="btn btn-primary" aria-describedby="popover-top">Popover on top with title and close button</button>
+        </div>
+
+        <hr>
+
+        <div id="div">
+            <pf-popover id="popover-bottom" placement="bottom" targetSelector="#btn-bottom-t-c" popoverTitle="Popover on bottom" dismissible="true">
+                popover text on bottom popover text on bottom popover text on bottom popover text on bottom popover text on bottom
+            </pf-popover>
+            <button id="btn-bottom-t-c" type="button" class="btn btn-primary" aria-describedby="popover-bottom">Popover on bottom with title and close button</button>
+        </div>
+    </div>
+
     <script src="//cdnjs.cloudflare.com/ajax/libs/webcomponentsjs/1.0.0/webcomponents-lite.js"></script>
     <script src="//rawgit.com/webcomponents/custom-elements/master/src/native-shim.js"></script>
     <script src="../../dist/js/patternfly.js"></script>
+    <script>
+        setTimeout(function () {
+            var pfPopoverRight = document.querySelector('[targetSelector="#btn-right"]');
+            pfPopoverRight.setInnerHtml("<span>Right content changed using public handler(setInnerHtml())!</span>");
+            pfPopoverRight.toggle();
+        });
+    </script>
 </body>
+
 </html>
