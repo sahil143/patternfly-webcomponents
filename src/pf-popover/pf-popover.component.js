@@ -53,7 +53,7 @@ export class PfPopover extends HTMLElement {
     if (this._dismissible) {
 
       document.addEventListener('click', (event) => {
-        if (this.popover !== null && event.target === this.popover.querySelector('div.popover > h3.popover-title .close')) {
+        if (this.popover !== null && event.target === this.popover.querySelector('div.popover > h3.popover-title .close > span.pficon-close')) {
           this.close();
         }
       }, false);
@@ -322,7 +322,7 @@ export class PfPopover extends HTMLElement {
     let popoverInner = clone.querySelector('.popover-content');
     let popovertitle = clone.querySelector('.popover-title');
     let closeButton = document.createElement('template');
-    closeButton.innerHTML = `<button type="button" class="close">×</button>`;
+    closeButton.innerHTML = `<button type="button" class="close"><span class="pficon pficon-close"></span></button>`;
 
     if (this._popoverTitle === '' && !this._dismissible) {
       popovertitle.parentNode.removeChild(popovertitle);

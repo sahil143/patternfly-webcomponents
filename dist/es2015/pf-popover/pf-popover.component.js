@@ -78,7 +78,7 @@ var PfPopover = exports.PfPopover = function (_HTMLElement) {
       if (this._dismissible) {
 
         document.addEventListener('click', function (event) {
-          if (_this2.popover !== null && event.target === _this2.popover.querySelector('div.popover > h3.popover-title .close')) {
+          if (_this2.popover !== null && event.target === _this2.popover.querySelector('div.popover > h3.popover-title .close > span.pficon-close')) {
             _this2.close();
           }
         }, false);
@@ -245,7 +245,7 @@ var PfPopover = exports.PfPopover = function (_HTMLElement) {
       var popoverInner = clone.querySelector('.popover-content');
       var popovertitle = clone.querySelector('.popover-title');
       var closeButton = document.createElement('template');
-      closeButton.innerHTML = '<button type="button" class="close">\xD7</button>';
+      closeButton.innerHTML = '<button type="button" class="close"><span class="pficon pficon-close"></span></button>';
 
       if (this._popoverTitle === '' && !this._dismissible) {
         popovertitle.parentNode.removeChild(popovertitle);
