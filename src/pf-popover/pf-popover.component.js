@@ -4,7 +4,19 @@ import { pfUtil } from 'pf-utils.js';
 /**
  * <b>&lt;pf-popover&gt;</b> element for Patternfly Web Components
  *
+ * @example {@lang xml}
+ * <pf-popover animation="fade" targetSelector="#btn-left" placement="left" delay="100" duration="150" popoverTitle="Popover Title" dismissible="true" containerSelector="#container"></pf-alert>
+ *
+ * @prop {string} animation the animation class
+ * @prop {string} targetSelector the target element selector
+ * @prop {string} placement left, right, top, bottom
+ * @prop {string} popoverTitle the title of popover
+ * @prop {string} dismissible true, false
+ * @prop {number} delay animation delay (ms)
+ * @prop {number} duration animation duration (ms)
+ * @prop {string} containerSelector the container element selector
  */
+
 
 export class PfPopover extends HTMLElement {
 
@@ -19,10 +31,9 @@ export class PfPopover extends HTMLElement {
     this._target = this._targetSelector ? document.querySelector(this._targetSelector) : this;
     this._animation = this.getAttribute('animation') ? this.getAttribute('animation') : 'fade';
     this._popoverTitle = this.getAttribute('popoverTitle') ? this.getAttribute('popoverTitle') : '';
-    this._close = this.getAttribute('close') ? this.getAttribute('close') : false;
+    this._dismissible = this.getAttribute('dismissible') ? this.getAttribute('dismissible') : false;
     this._placement = this.getAttribute('placement') ? this.getAttribute('placement') : 'right';
     this._delay = parseInt(this.getAttribute('delay')) || 100;
-    this._tipPositions = /\b(top|bottom|left|top)+/;
     this._duration = pfUtil.isMSIE && pfUtil.isMSIE < 10 ? 0 : (parseInt(this.getAttribute('duration')) || 150);
     this._containerSelector = this.getAttribute('containerSelector');
     this._container = this._containerSelector ? document.querySelector(this._containerSelector) : document.body;
@@ -30,7 +41,7 @@ export class PfPopover extends HTMLElement {
     if (this._target) {
       //create open event listeners
       this._target.addEventListener('click', (e) => {
-        if (document.querySelector('.popover')) {
+        if (this.popover !== null) {
           this.close(e);
         } else {
           this.open(e);
@@ -39,10 +50,12 @@ export class PfPopover extends HTMLElement {
       }, false);
     }
 
-    if (this._close && document.querySelector('.popover')) {
+    if (this._dismissible) {
 
-      document.querySelector('.popover > .popover-title > .close').addEventListener('click', (e) => {
-        this.close(e);
+      document.addEventListener('click', (event) => {
+        if (this.popover !== null && event.target === this.popover.querySelector('div.popover > h3.popover-title .close')) {
+          this.close();
+        }
       }, false);
     }
   }
@@ -64,7 +77,7 @@ export class PfPopover extends HTMLElement {
    * Only attributes listed in the observedAttributes property will receive this callback
    */
   static get observedAttributes() {
-    return ['animation', 'targetSelector', 'placement', 'delay', 'duration', 'containerSelector'];
+    return ['animation', 'targetSelector', 'placement', 'delay', 'duration', 'containerSelector', 'popoverTitle'];
   }
 
   /**
@@ -95,6 +108,18 @@ export class PfPopover extends HTMLElement {
   setInnerHtml(html) {
     this._innerHtml = html;
     this.element.dispatchEvent(new CustomEvent('handleContentChanged', {}));
+  }
+
+  /**
+   * public handler
+   */
+  toggle() {
+    this.init();
+    if (this.popover === null) {
+      this.open();
+    } else {
+      this.close();
+    }
   }
 
   /**
@@ -226,6 +251,27 @@ export class PfPopover extends HTMLElement {
   }
 
   /**
+   * Get the popoverTitle
+   *
+   * @return {string} the title of popover
+   */
+  get popoverTitle() {
+    return this._popoverTitle;
+  }
+
+  /**
+   * Set popoverTitle
+   *
+   * @param {string} value The title of popover
+   */
+  set popoverTitle(value) {
+    if (this._popoverTitle !== value) {
+      this._popoverTitle = value;
+      this.setAttribute('popoverTitle', value);
+    }
+  }
+
+  /**
      * The popover open method
      */
   open() {
@@ -236,7 +282,7 @@ export class PfPopover extends HTMLElement {
         this._stylePopover();
         this._showPopover();
         //notify frameworks
-        this.dispatchEvent(new CustomEvent('popoverOpened', {}));
+        this.dispatchEvent(new CustomEvent('pf-popover.opened', {}));
       }
     }, 20);
   }
@@ -252,7 +298,7 @@ export class PfPopover extends HTMLElement {
         setTimeout(() => {
           this._removePopover();
           //notify frameworks
-          this.dispatchEvent(new CustomEvent('popoverClosed', {}));
+          this.dispatchEvent(new CustomEvent('pf-popover.closed', {}));
         }, this._duration);
       }
     }, this._delay + this._duration);
@@ -276,15 +322,18 @@ export class PfPopover extends HTMLElement {
     let popoverInner = clone.querySelector('.popover-content');
     let popovertitle = clone.querySelector('.popover-title');
     let closeButton = document.createElement('template');
-    closeButton.innerHTML = `<button type="button" class="close"><span class="pficon pficon-close"></span></button>`;
+    closeButton.innerHTML = `<button type="button" class="close">×</button>`;
 
-    //set popover title
-    popovertitle.innerHTML = this._popoverTitle;
+    if (this._popoverTitle === '' && !this._dismissible) {
+      popovertitle.parentNode.removeChild(popovertitle);
+    } else {
+      //set popover title
+      popovertitle.innerHTML = this._popoverTitle;
 
-    if (this._close) {
-      popovertitle.appendChild(closeButton.content);
+      if (this._dismissible) {
+        popovertitle.appendChild(closeButton.content);
+      }
     }
-
     //set popover content
     popoverInner.innerHTML = this.content;
 
@@ -294,6 +343,7 @@ export class PfPopover extends HTMLElement {
     //set reference to appended node
     let popovers = this._container.querySelectorAll('.popover');
     this.popover = popovers[popovers.length - 1];
+    this.popover.style.display = 'block';
     this.popover.setAttribute('class', `popover ${this._placement} ${this._animation}`);
   }
 
@@ -337,7 +387,6 @@ export class PfPopover extends HTMLElement {
    */
   _showPopover() {
     !/\bin/.test(this.popover.className) && (pfUtil.addClass(this.popover, 'in'));
-    this.popover.style.display = 'block';
   }
 
 }

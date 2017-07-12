@@ -48,7 +48,7 @@
 	'use strict';
 
 	/** PF Popover Component **/
-	__webpack_require__(31);
+	__webpack_require__(32);
 
 /***/ },
 
@@ -176,7 +176,7 @@
 
 /***/ },
 
-/***/ 31:
+/***/ 32:
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -188,7 +188,7 @@
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-	var _pfPopover = __webpack_require__(32);
+	var _pfPopover = __webpack_require__(33);
 
 	var _pfPopover2 = _interopRequireDefault(_pfPopover);
 
@@ -205,6 +205,17 @@
 	/**
 	 * <b>&lt;pf-popover&gt;</b> element for Patternfly Web Components
 	 *
+	 * @example {@lang xml}
+	 * <pf-popover animation="fade" targetSelector="#btn-left" placement="left" delay="100" duration="150" popoverTitle="Popover Title" dismissible="true" containerSelector="#container"></pf-alert>
+	 *
+	 * @prop {string} animation the animation class
+	 * @prop {string} targetSelector the target element selector
+	 * @prop {string} placement left, right, top, bottom
+	 * @prop {string} popoverTitle the title of popover
+	 * @prop {string} dismissible true, false
+	 * @prop {number} delay animation delay (ms)
+	 * @prop {number} duration animation duration (ms)
+	 * @prop {string} containerSelector the container element selector
 	 */
 
 	var PfPopover = exports.PfPopover = function (_HTMLElement) {
@@ -227,10 +238,9 @@
 	      this._target = this._targetSelector ? document.querySelector(this._targetSelector) : this;
 	      this._animation = this.getAttribute('animation') ? this.getAttribute('animation') : 'fade';
 	      this._popoverTitle = this.getAttribute('popoverTitle') ? this.getAttribute('popoverTitle') : '';
-	      this._close = this.getAttribute('close') ? this.getAttribute('close') : false;
+	      this._dismissible = this.getAttribute('dismissible') ? this.getAttribute('dismissible') : false;
 	      this._placement = this.getAttribute('placement') ? this.getAttribute('placement') : 'right';
 	      this._delay = parseInt(this.getAttribute('delay')) || 100;
-	      this._tipPositions = /\b(top|bottom|left|top)+/;
 	      this._duration = _pfUtils.pfUtil.isMSIE && _pfUtils.pfUtil.isMSIE < 10 ? 0 : parseInt(this.getAttribute('duration')) || 150;
 	      this._containerSelector = this.getAttribute('containerSelector');
 	      this._container = this._containerSelector ? document.querySelector(this._containerSelector) : document.body;
@@ -238,7 +248,7 @@
 	      if (this._target) {
 	        //create open event listeners
 	        this._target.addEventListener('click', function (e) {
-	          if (document.querySelector('.popover')) {
+	          if (_this2.popover !== null) {
 	            _this2.close(e);
 	          } else {
 	            _this2.open(e);
@@ -246,10 +256,12 @@
 	        }, false);
 	      }
 
-	      if (this._close && document.querySelector('.popover')) {
+	      if (this._dismissible) {
 
-	        document.querySelector('.popover > .popover-title > .close').addEventListener('click', function (e) {
-	          _this2.close(e);
+	        document.addEventListener('click', function (event) {
+	          if (_this2.popover !== null && event.target === _this2.popover.querySelector('div.popover > h3.popover-title .close')) {
+	            _this2.close();
+	          }
 	        }, false);
 	      }
 	    }
@@ -297,7 +309,7 @@
 	  }], [{
 	    key: 'observedAttributes',
 	    get: function get() {
-	      return ['animation', 'targetSelector', 'placement', 'delay', 'duration', 'containerSelector'];
+	      return ['animation', 'targetSelector', 'placement', 'delay', 'duration', 'containerSelector', 'popoverTitle'];
 	    }
 	  }]);
 
@@ -326,6 +338,21 @@
 	    }
 
 	    /**
+	     * public handler
+	     */
+
+	  }, {
+	    key: 'toggle',
+	    value: function toggle() {
+	      this.init();
+	      if (this.popover === null) {
+	        this.open();
+	      } else {
+	        this.close();
+	      }
+	    }
+
+	    /**
 	     * Get the animation class
 	     *
 	     * @returns {string} The animation class
@@ -348,7 +375,7 @@
 	          _this4._stylePopover();
 	          _this4._showPopover();
 	          //notify frameworks
-	          _this4.dispatchEvent(new CustomEvent('popoverOpened', {}));
+	          _this4.dispatchEvent(new CustomEvent('pf-popover.opened', {}));
 	        }
 	      }, 20);
 	    }
@@ -369,7 +396,7 @@
 	          setTimeout(function () {
 	            _this5._removePopover();
 	            //notify frameworks
-	            _this5.dispatchEvent(new CustomEvent('popoverClosed', {}));
+	            _this5.dispatchEvent(new CustomEvent('pf-popover.closed', {}));
 	          }, _this5._duration);
 	        }
 	      }, this._delay + this._duration);
@@ -399,15 +426,18 @@
 	      var popoverInner = clone.querySelector('.popover-content');
 	      var popovertitle = clone.querySelector('.popover-title');
 	      var closeButton = document.createElement('template');
-	      closeButton.innerHTML = '<button type="button" class="close"><span class="pficon pficon-close"></span></button>';
+	      closeButton.innerHTML = '<button type="button" class="close">\xD7</button>';
 
-	      //set popover title
-	      popovertitle.innerHTML = this._popoverTitle;
+	      if (this._popoverTitle === '' && !this._dismissible) {
+	        popovertitle.parentNode.removeChild(popovertitle);
+	      } else {
+	        //set popover title
+	        popovertitle.innerHTML = this._popoverTitle;
 
-	      if (this._close) {
-	        popovertitle.appendChild(closeButton.content);
+	        if (this._dismissible) {
+	          popovertitle.appendChild(closeButton.content);
+	        }
 	      }
-
 	      //set popover content
 	      popoverInner.innerHTML = this.content;
 
@@ -417,6 +447,7 @@
 	      //set reference to appended node
 	      var popovers = this._container.querySelectorAll('.popover');
 	      this.popover = popovers[popovers.length - 1];
+	      this.popover.style.display = 'block';
 	      this.popover.setAttribute('class', 'popover ' + this._placement + ' ' + this._animation);
 	    }
 
@@ -467,7 +498,6 @@
 	    key: '_showPopover',
 	    value: function _showPopover() {
 	      !/\bin/.test(this.popover.className) && _pfUtils.pfUtil.addClass(this.popover, 'in');
-	      this.popover.style.display = 'block';
 	    }
 	  }, {
 	    key: 'animation',
@@ -614,6 +644,31 @@
 	        this.setAttribute('targetSelector', value);
 	      }
 	    }
+
+	    /**
+	     * Get the popoverTitle
+	     *
+	     * @return {string} the title of popover
+	     */
+
+	  }, {
+	    key: 'popoverTitle',
+	    get: function get() {
+	      return this._popoverTitle;
+	    }
+
+	    /**
+	     * Set popoverTitle
+	     *
+	     * @param {string} value The title of popover
+	     */
+	    ,
+	    set: function set(value) {
+	      if (this._popoverTitle !== value) {
+	        this._popoverTitle = value;
+	        this.setAttribute('popoverTitle', value);
+	      }
+	    }
 	  }]);
 
 	  return PfPopover;
@@ -623,7 +678,7 @@
 
 /***/ },
 
-/***/ 32:
+/***/ 33:
 /***/ function(module, exports) {
 
 	"use strict";
@@ -633,10 +688,7 @@
 	});
 	var PfPopoverTemplate = "\n<div class=\"popover\" role=\"popover\">\n  <div class=\"arrow\"></div>\n  <h3 class=\"popover-title closable\"></h3>\n  <div class=\"popover-content\"></div>\n</div>\n";
 
-	var pfPopoverDismissibleButton = "\n<button type=\"button\" class=\"close\">\n<span class=\"pficon pficon-close\"></span>\n</button>";
-
 	exports.default = PfPopoverTemplate;
-	exports.tmp = pfPopoverDismissibleButton;
 
 /***/ }
 
