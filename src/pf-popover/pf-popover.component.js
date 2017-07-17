@@ -208,18 +208,18 @@ export class PfPopover extends HTMLElement {
   }
 
   /**
-   * Get the placement position
+   * Get the placement this._placement
    *
-   * @returns {string} The placement position left, top, bottom, right
+   * @returns {string} The placement this._placement left, top, bottom, right
    */
   get placement() {
     return this._placement;
   }
 
   /**
-   * Set placement position
+   * Set placement this._placement
    *
-   * @param {string} value The placement position left, top, bottom, right
+   * @param {string} value The placement this._placement left, top, bottom, right
    */
   set placement(value) {
     if (this._placement !== value) {
@@ -280,6 +280,7 @@ export class PfPopover extends HTMLElement {
       if (this.popover === null) {
         this._createPopover();
         this._stylePopover();
+        this._checkPlacement();
         this._showPopover();
         //notify frameworks
         this.dispatchEvent(new CustomEvent('pf-popover.opened', {}));
@@ -348,6 +349,16 @@ export class PfPopover extends HTMLElement {
   }
 
   /**
+   * update the placement of popover
+   */
+  _updatePlacement() {
+    return this._placement === 'top' ? 'bottom' : // top
+      this._placement === 'bottom' ? 'top' : // bottom
+        this._placement === 'left' ? 'right' : // left
+          this._placement === 'right' ? 'left' : this._placement; // right
+  }
+
+  /**
    * Styles the popover based on placement attribute
    * @private
    */
@@ -363,21 +374,37 @@ export class PfPopover extends HTMLElement {
     const popoverDimensions = { w: this.popover.offsetWidth, h: this.popover.offsetHeight };
 
     //apply styling
-    if (/top/.test(this._placement)) { //TOP
-      this.popover.style.top = `${rect.top + scroll.y - popoverDimensions.h}px`;
-      this.popover.style.left = `${rect.left + scroll.x - popoverDimensions.w / 2 + linkDimensions.w / 2}px`;
+    switch (this._placement) {
+      case 'top': //TOP
+        this.popover.style.top = `${rect.top + scroll.y - popoverDimensions.h}px`;
+        this.popover.style.left = `${rect.left + scroll.x - popoverDimensions.w / 2 + linkDimensions.w / 2}px`;
+        break;
 
-    } else if (/bottom/.test(this._placement)) { //BOTTOM
-      this.popover.style.top = `${rect.top + scroll.y + linkDimensions.h}px`;
-      this.popover.style.left = `${rect.left + scroll.x - popoverDimensions.w / 2 + linkDimensions.w / 2}px`;
+      case 'bottom': //BOTTOM
+        this.popover.style.top = `${rect.top + scroll.y + linkDimensions.h}px`;
+        this.popover.style.left = `${rect.left + scroll.x - popoverDimensions.w / 2 + linkDimensions.w / 2}px`;
+        break;
 
-    } else if (/left/.test(this._placement)) { //LEFT
-      this.popover.style.top = `${rect.top + scroll.y - popoverDimensions.h / 2 + linkDimensions.h / 2}px`;
-      this.popover.style.left = `${rect.left + scroll.x - popoverDimensions.w}px`;
+      case 'left': //LEFT
+        this.popover.style.top = `${rect.top + scroll.y - popoverDimensions.h / 2 + linkDimensions.h / 2}px`;
+        this.popover.style.left = `${rect.left + scroll.x - popoverDimensions.w}px`;
+        break;
 
-    } else if (/right/.test(this._placement)) { //RIGHT
-      this.popover.style.top = `${rect.top + scroll.y - popoverDimensions.h / 2 + linkDimensions.h / 2}px`;
-      this.popover.style.left = `${rect.left + scroll.x + linkDimensions.w}px`;
+      case 'right': //RIGHT
+        this.popover.style.top = `${rect.top + scroll.y - popoverDimensions.h / 2 + linkDimensions.h / 2}px`;
+        this.popover.style.left = `${rect.left + scroll.x + linkDimensions.w}px`;
+        break;
+    }
+  }
+
+  /**
+   * check the placement of popover
+   */
+  _checkPlacement() {
+    if (!pfUtil.isElementInViewport(this.popover)) {
+      this._placement = this._updatePlacement();
+      this._createPopover();
+      this._stylePopover();
     }
   }
 

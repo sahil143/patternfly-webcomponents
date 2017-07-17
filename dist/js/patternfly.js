@@ -4319,6 +4319,7 @@
 	        if (_this4.popover === null) {
 	          _this4._createPopover();
 	          _this4._stylePopover();
+	          _this4._checkPlacement();
 	          _this4._showPopover();
 	          //notify frameworks
 	          _this4.dispatchEvent(new CustomEvent('pf-popover.opened', {}));
@@ -4398,6 +4399,19 @@
 	    }
 
 	    /**
+	     * update the placement of popover
+	     */
+
+	  }, {
+	    key: '_updatePlacement',
+	    value: function _updatePlacement() {
+	      return this._placement === 'top' ? 'bottom' : // top
+	      this._placement === 'bottom' ? 'top' : // bottom
+	      this._placement === 'left' ? 'right' : // left
+	      this._placement === 'right' ? 'left' : this._placement; // right
+	    }
+
+	    /**
 	     * Styles the popover based on placement attribute
 	     * @private
 	     */
@@ -4416,22 +4430,44 @@
 	      var popoverDimensions = { w: this.popover.offsetWidth, h: this.popover.offsetHeight };
 
 	      //apply styling
-	      if (/top/.test(this._placement)) {
-	        //TOP
-	        this.popover.style.top = rect.top + scroll.y - popoverDimensions.h + 'px';
-	        this.popover.style.left = rect.left + scroll.x - popoverDimensions.w / 2 + linkDimensions.w / 2 + 'px';
-	      } else if (/bottom/.test(this._placement)) {
-	        //BOTTOM
-	        this.popover.style.top = rect.top + scroll.y + linkDimensions.h + 'px';
-	        this.popover.style.left = rect.left + scroll.x - popoverDimensions.w / 2 + linkDimensions.w / 2 + 'px';
-	      } else if (/left/.test(this._placement)) {
-	        //LEFT
-	        this.popover.style.top = rect.top + scroll.y - popoverDimensions.h / 2 + linkDimensions.h / 2 + 'px';
-	        this.popover.style.left = rect.left + scroll.x - popoverDimensions.w + 'px';
-	      } else if (/right/.test(this._placement)) {
-	        //RIGHT
-	        this.popover.style.top = rect.top + scroll.y - popoverDimensions.h / 2 + linkDimensions.h / 2 + 'px';
-	        this.popover.style.left = rect.left + scroll.x + linkDimensions.w + 'px';
+	      switch (this._placement) {
+	        case 'top':
+	          //TOP
+	          this.popover.style.top = rect.top + scroll.y - popoverDimensions.h + 'px';
+	          this.popover.style.left = rect.left + scroll.x - popoverDimensions.w / 2 + linkDimensions.w / 2 + 'px';
+	          break;
+
+	        case 'bottom':
+	          //BOTTOM
+	          this.popover.style.top = rect.top + scroll.y + linkDimensions.h + 'px';
+	          this.popover.style.left = rect.left + scroll.x - popoverDimensions.w / 2 + linkDimensions.w / 2 + 'px';
+	          break;
+
+	        case 'left':
+	          //LEFT
+	          this.popover.style.top = rect.top + scroll.y - popoverDimensions.h / 2 + linkDimensions.h / 2 + 'px';
+	          this.popover.style.left = rect.left + scroll.x - popoverDimensions.w + 'px';
+	          break;
+
+	        case 'right':
+	          //RIGHT
+	          this.popover.style.top = rect.top + scroll.y - popoverDimensions.h / 2 + linkDimensions.h / 2 + 'px';
+	          this.popover.style.left = rect.left + scroll.x + linkDimensions.w + 'px';
+	          break;
+	      }
+	    }
+
+	    /**
+	     * check the placement of popover
+	     */
+
+	  }, {
+	    key: '_checkPlacement',
+	    value: function _checkPlacement() {
+	      if (!_pfUtils.pfUtil.isElementInViewport(this.popover)) {
+	        this._placement = this._updatePlacement();
+	        this._createPopover();
+	        this._stylePopover();
 	      }
 	    }
 
@@ -4541,9 +4577,9 @@
 	    }
 
 	    /**
-	     * Get the placement position
+	     * Get the placement this._placement
 	     *
-	     * @returns {string} The placement position left, top, bottom, right
+	     * @returns {string} The placement this._placement left, top, bottom, right
 	     */
 
 	  }, {
@@ -4553,9 +4589,9 @@
 	    }
 
 	    /**
-	     * Set placement position
+	     * Set placement this._placement
 	     *
-	     * @param {string} value The placement position left, top, bottom, right
+	     * @param {string} value The placement this._placement left, top, bottom, right
 	     */
 	    ,
 	    set: function set(value) {
