@@ -342,8 +342,7 @@ export class PfPopover extends HTMLElement {
     this._container.appendChild(clone);
 
     //set reference to appended node
-    let popovers = this._container.querySelectorAll('.popover');
-    this.popover = popovers[popovers.length - 1];
+    this.popover = this._container.querySelectorAll('.popover:last-child')[0];
     this.popover.style.display = 'block';
     this.popover.setAttribute('class', `popover ${this._placement} ${this._animation}`);
   }
@@ -352,10 +351,22 @@ export class PfPopover extends HTMLElement {
    * update the placement of popover
    */
   _updatePlacement() {
-    return this._placement === 'top' ? 'bottom' : // top
-      this._placement === 'bottom' ? 'top' : // bottom
-        this._placement === 'left' ? 'right' : // left
-          this._placement === 'right' ? 'left' : this._placement; // right
+    switch (this._placement) {
+      case 'top':
+        return 'bottom';
+        break;
+      case 'bottom':
+        return 'top';
+        break;
+      case 'left':
+        return 'right';
+        break;
+      case 'right':
+        return 'left';
+        break;
+      default:
+        return this._placement;
+    }
   }
 
   /**
@@ -395,6 +406,7 @@ export class PfPopover extends HTMLElement {
         this.popover.style.left = `${rect.left + scroll.x + linkDimensions.w}px`;
         break;
     }
+    this.popover.className.indexOf(this._placement) === -1 && (this.popover.className = this.popover.className.replace(/\b(top|bottom|left|right)+/, this._placement));
   }
 
   /**
@@ -403,7 +415,6 @@ export class PfPopover extends HTMLElement {
   _checkPlacement() {
     if (!pfUtil.isElementInViewport(this.popover)) {
       this._placement = this._updatePlacement();
-      this._createPopover();
       this._stylePopover();
     }
   }
