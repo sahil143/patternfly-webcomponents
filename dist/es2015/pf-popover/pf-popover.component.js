@@ -280,16 +280,12 @@ var PfPopover = exports.PfPopover = function (_HTMLElement) {
       switch (this._placement) {
         case 'top':
           return 'bottom';
-          break;
         case 'bottom':
           return 'top';
-          break;
         case 'left':
           return 'right';
-          break;
         case 'right':
           return 'left';
-          break;
         default:
           return this._placement;
       }
