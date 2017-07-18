@@ -265,8 +265,7 @@ var PfPopover = exports.PfPopover = function (_HTMLElement) {
       this._container.appendChild(clone);
 
       //set reference to appended node
-      var popovers = this._container.querySelectorAll('.popover');
-      this.popover = popovers[popovers.length - 1];
+      this.popover = this._container.querySelectorAll('.popover:last-child')[0];
       this.popover.style.display = 'block';
       this.popover.setAttribute('class', 'popover ' + this._placement + ' ' + this._animation);
     }
@@ -278,10 +277,22 @@ var PfPopover = exports.PfPopover = function (_HTMLElement) {
   }, {
     key: '_updatePlacement',
     value: function _updatePlacement() {
-      return this._placement === 'top' ? 'bottom' : // top
-      this._placement === 'bottom' ? 'top' : // bottom
-      this._placement === 'left' ? 'right' : // left
-      this._placement === 'right' ? 'left' : this._placement; // right
+      switch (this._placement) {
+        case 'top':
+          return 'bottom';
+          break;
+        case 'bottom':
+          return 'top';
+          break;
+        case 'left':
+          return 'right';
+          break;
+        case 'right':
+          return 'left';
+          break;
+        default:
+          return this._placement;
+      }
     }
 
     /**
@@ -328,6 +339,7 @@ var PfPopover = exports.PfPopover = function (_HTMLElement) {
           this.popover.style.left = rect.left + scroll.x + linkDimensions.w + 'px';
           break;
       }
+      this.popover.className.indexOf(this._placement) === -1 && (this.popover.className = this.popover.className.replace(/\b(top|bottom|left|right)+/, this._placement));
     }
 
     /**
@@ -339,7 +351,6 @@ var PfPopover = exports.PfPopover = function (_HTMLElement) {
     value: function _checkPlacement() {
       if (!_pfUtils.pfUtil.isElementInViewport(this.popover)) {
         this._placement = this._updatePlacement();
-        this._createPopover();
         this._stylePopover();
       }
     }
