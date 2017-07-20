@@ -300,6 +300,8 @@ export class PfPopover extends HTMLElement {
           this._removePopover();
           //notify frameworks
           this.dispatchEvent(new CustomEvent('pf-popover.closed', {}));
+          // reset position after popover is closed
+          this._placement = this.getAttribute('placement') ? this.getAttribute('placement') : 'right';
         }, this._duration);
       }
     }, this._delay + this._duration);
