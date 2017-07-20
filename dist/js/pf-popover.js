@@ -398,6 +398,8 @@
 	            _this5._removePopover();
 	            //notify frameworks
 	            _this5.dispatchEvent(new CustomEvent('pf-popover.closed', {}));
+	            // reset position after popover is closed
+	            _this5._placement = _this5.getAttribute('placement') ? _this5.getAttribute('placement') : 'right';
 	          }, _this5._duration);
 	        }
 	      }, this._delay + this._duration);
