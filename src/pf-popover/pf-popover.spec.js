@@ -5,7 +5,7 @@ describe("PatternFly Popover Component Tests", function () {
     customElement = document.createElement('pf-popover');
     customElement.setAttribute('id', 'popover');
     customElement.setAttribute('placement', 'left');
-    customElement.setAttribute('targetSelector', '#btn');
+    customElement.setAttribute('target-selector', '#btn');
     button = document.createElement('button');
     button.setAttribute('id', 'btn');
     document.body.appendChild(button);
