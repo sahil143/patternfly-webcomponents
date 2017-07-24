@@ -5,16 +5,16 @@ import { pfUtil } from 'pf-utils.js';
  * <b>&lt;pf-popover&gt;</b> element for Patternfly Web Components
  *
  * @example {@lang xml}
- * <pf-popover animation="fade" targetSelector="#btn-left" placement="left" delay="100" duration="150" popoverTitle="Popover Title" dismissible="true" containerSelector="#container"></pf-alert>
+ * <pf-popover animation="fade" target-selector="#btn-left" placement="left" delay="100" duration="150" popover-title="Popover Title" dismissible="true" container-selector="#container"></pf-alert>
  *
  * @prop {string} animation the animation class
- * @prop {string} targetSelector the target element selector
+ * @prop {string} target-selector the target element selector
  * @prop {string} placement left, right, top, bottom
- * @prop {string} popoverTitle the title of popover
+ * @prop {string} popover-title the title of popover
  * @prop {string} dismissible true, false
  * @prop {number} delay animation delay (ms)
  * @prop {number} duration animation duration (ms)
- * @prop {string} containerSelector the container element selector
+ * @prop {string} container-selector the container element selector
  */
 
 
@@ -27,15 +27,15 @@ export class PfPopover extends HTMLElement {
     this.element = this;
     this.content = this._innerHtml || this.element.innerHTML;
     this.popover = null;
-    this._targetSelector = this.getAttribute('targetSelector');
+    this._targetSelector = this.getAttribute('target-selector');
     this._target = this._targetSelector ? document.querySelector(this._targetSelector) : this;
     this._animation = this.getAttribute('animation') ? this.getAttribute('animation') : 'fade';
-    this._popoverTitle = this.getAttribute('popoverTitle') ? this.getAttribute('popoverTitle') : '';
+    this._popoverTitle = this.getAttribute('popover-title') ? this.getAttribute('popover-title') : '';
     this._dismissible = this.getAttribute('dismissible') ? this.getAttribute('dismissible') : false;
     this._placement = this.getAttribute('placement') ? this.getAttribute('placement') : 'right';
     this._delay = parseInt(this.getAttribute('delay')) || 100;
     this._duration = pfUtil.isMSIE && pfUtil.isMSIE < 10 ? 0 : (parseInt(this.getAttribute('duration')) || 150);
-    this._containerSelector = this.getAttribute('containerSelector');
+    this._containerSelector = this.getAttribute('container-selector');
     this._container = this._containerSelector ? document.querySelector(this._containerSelector) : document.body;
 
     if (this._target) {
@@ -77,7 +77,7 @@ export class PfPopover extends HTMLElement {
    * Only attributes listed in the observedAttributes property will receive this callback
    */
   static get observedAttributes() {
-    return ['animation', 'targetSelector', 'placement', 'delay', 'duration', 'containerSelector', 'popoverTitle'];
+    return ['animation', 'target-selector', 'placement', 'delay', 'duration', 'container-selector', 'popover-title'];
   }
 
   /**
@@ -144,7 +144,7 @@ export class PfPopover extends HTMLElement {
   }
 
   /**
-   * Get the popover containerSelector
+   * Get the popover container-selector
    *
    * @returns {string} The container element selector
    */
@@ -153,7 +153,7 @@ export class PfPopover extends HTMLElement {
   }
 
   /**
-   * Set the popover containerSelector
+   * Set the popover container-selector
    *
    * @param {string} value The container element selector
    */
@@ -161,7 +161,7 @@ export class PfPopover extends HTMLElement {
     if (this._containerSelector !== value) {
       this._containerSelector = value;
       this._container = document.querySelector(this._containerSelector);
-      this.setAttribute('containerSelector', value);
+      this.setAttribute('container-selector', value);
     }
   }
 
@@ -229,7 +229,7 @@ export class PfPopover extends HTMLElement {
   }
 
   /**
-  * Get the targetSelector
+  * Get the target-selector
   *
   * @returns {string} The target element selector
   */
@@ -238,7 +238,7 @@ export class PfPopover extends HTMLElement {
   }
 
   /**
-   * Set targetSelector
+   * Set target-selector
    *
    * @param {string} value The target element selector
    */
@@ -246,12 +246,12 @@ export class PfPopover extends HTMLElement {
     if (this._targetSelector !== value) {
       this._targetSelector = value;
       this._target = document.querySelector(this._targetSelector);
-      this.setAttribute('targetSelector', value);
+      this.setAttribute('target-selector', value);
     }
   }
 
   /**
-   * Get the popoverTitle
+   * Get the popover-title
    *
    * @return {string} the title of popover
    */
@@ -260,14 +260,14 @@ export class PfPopover extends HTMLElement {
   }
 
   /**
-   * Set popoverTitle
+   * Set popover-title
    *
    * @param {string} value The title of popover
    */
   set popoverTitle(value) {
     if (this._popoverTitle !== value) {
       this._popoverTitle = value;
-      this.setAttribute('popoverTitle', value);
+      this.setAttribute('popover-title', value);
     }
   }
 

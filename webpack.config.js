@@ -20,11 +20,12 @@ module.exports = {
     'pf-utilization-bar-chart': './src/pf-utilization-bar-chart/index',
     'pf-modal': './src/pf-modal/index',
     'pf-popover': './src/pf-popover/index',
-    'pf-utils': './src/pf-utils/index'
+    'pf-utils': './src/pf-utils/index',
+    'index': './src/index'
   },
 
   resolve: {
-    root: [
+    modules: [
       path.join(__dirname, "src/pf-alert"),
       path.join(__dirname, "src/pf-hello"),
       path.join(__dirname, "src/pf-i18n"),
@@ -55,14 +56,16 @@ module.exports = {
   ],
 
   module: {
-    loaders: [
+    rules: [
       //js loader
       {
-        loader: "babel",
-
-        // Options to configure babel with
-        query: {
-          presets: ['es2015']
+        test: /\.js$/,
+        exclude: /(node_modules|bower_components)/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['es2015']
+          }
         }
       }
     ]
