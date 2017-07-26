@@ -92,7 +92,7 @@ var PfModalHeader = exports.PfModalHeader = function (_HTMLElement) {
      * @param {string} newValue The new attribute value
      */
     value: function attributeChangedCallback(attrName, oldValue, newValue) {
-      if (attrName === 'modaltitle') {
+      if (attrName === 'modal-title') {
         if (newValue && !oldValue) {
           this._addModalTitle();
         }
@@ -132,7 +132,7 @@ var PfModalHeader = exports.PfModalHeader = function (_HTMLElement) {
   }], [{
     key: 'observedAttributes',
     get: function get() {
-      return ['modaltitle'];
+      return ['modal-title'];
     }
   }]);
 

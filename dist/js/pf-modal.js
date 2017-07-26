@@ -283,7 +283,7 @@ var PfModal = exports.PfModal = function (_HTMLElement) {
      * @param {string} newValue The new attribute value
      */
     value: function attributeChangedCallback(attrName, oldValue, newValue) {
-      if (attrName === 'targetselector' && newValue !== null && oldValue === null) {
+      if (attrName === 'target-selector' && newValue !== null && oldValue === null) {
         this._target = document.querySelector(newValue);
         if (this._target) {
           this._target.addEventListener('click', this.show.bind(this), false);
@@ -398,7 +398,7 @@ var PfModal = exports.PfModal = function (_HTMLElement) {
   }], [{
     key: 'observedAttributes',
     get: function get() {
-      return ['targetselector', 'open', 'keyboard', 'backdrop'];
+      return ['target-selector', 'open', 'keyboard', 'backdrop'];
     }
   }]);
 
@@ -802,7 +802,7 @@ var PfModalHeader = exports.PfModalHeader = function (_HTMLElement) {
      * @param {string} newValue The new attribute value
      */
     value: function attributeChangedCallback(attrName, oldValue, newValue) {
-      if (attrName === 'modaltitle') {
+      if (attrName === 'modal-title') {
         if (newValue && !oldValue) {
           this._addModalTitle();
         }
@@ -842,7 +842,7 @@ var PfModalHeader = exports.PfModalHeader = function (_HTMLElement) {
   }], [{
     key: 'observedAttributes',
     get: function get() {
-      return ['modaltitle'];
+      return ['modal-title'];
     }
   }]);
 

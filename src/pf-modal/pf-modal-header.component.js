@@ -70,7 +70,7 @@ export class PfModalHeader extends HTMLElement {
    * Only attributes listed in the observedAttributes property will receive this callback
    */
   static get observedAttributes() {
-    return ['modaltitle'];
+    return ['modal-title'];
   }
 
   /*
@@ -81,7 +81,7 @@ export class PfModalHeader extends HTMLElement {
    * @param {string} newValue The new attribute value
    */
   attributeChangedCallback (attrName, oldValue, newValue) {
-    if (attrName === 'modaltitle') {
+    if (attrName === 'modal-title') {
       if (newValue && !oldValue) {
         this._addModalTitle();
       }

@@ -118,7 +118,7 @@ export class PfModal extends HTMLElement {
    * Only attributes listed in the observedAttributes property will receive this callback
    */
   static get observedAttributes() {
-    return ['targetselector', 'open', 'keyboard', 'backdrop'];
+    return ['target-selector', 'open', 'keyboard', 'backdrop'];
   }
 
   /*
@@ -129,7 +129,7 @@ export class PfModal extends HTMLElement {
    * @param {string} newValue The new attribute value
    */
   attributeChangedCallback (attrName, oldValue, newValue) {
-    if (attrName === 'targetselector' && newValue !== null && oldValue === null) {
+    if (attrName === 'target-selector' && newValue !== null && oldValue === null) {
       this._target = document.querySelector(newValue);
       if (this._target) {
         this._target.addEventListener('click', this.show.bind(this), false);
