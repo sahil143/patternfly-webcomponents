@@ -253,7 +253,7 @@ export class PfTooltip extends HTMLElement {
         setTimeout(() => {
           this._removeTooltip();
           //notify frameworks
-          this.dispatchEvent(new CustomEvent('tooltipClosed', {}));
+          this.dispatchEvent(new CustomEvent('pf-tooltip.closed', {}));
           // reset position after tooltip is closed
           this._placement = this.getAttribute('placement') ? this.getAttribute('placement') : 'right';
         }, this._duration);
