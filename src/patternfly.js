@@ -45,3 +45,6 @@ require('pf-popover.component.js');
 
 /** PF Accordion Component **/
 require('pf-accordion.component.js');
+
+/** PF Donut Chart **/
+require('pf-donut-chart.component.js');
