@@ -309,7 +309,7 @@ var PfTooltip = exports.PfTooltip = function (_HTMLElement) {
       this.init();
 
       //handleContentChanged
-      this.element.addEventListener('handleContentChanged', function (e) {
+      this.element.addEventListener('pf-tooltip.handleContentChanged', function (e) {
         _this3.init();
       }, false);
     }
@@ -365,7 +365,7 @@ var PfTooltip = exports.PfTooltip = function (_HTMLElement) {
     key: 'setInnerHtml',
     value: function setInnerHtml(html) {
       this._innerHtml = html;
-      this.element.dispatchEvent(new CustomEvent('handleContentChanged', {}));
+      this.element.dispatchEvent(new CustomEvent('pf-tooltip.handleContentChanged', {}));
     }
 
     /**
@@ -392,7 +392,7 @@ var PfTooltip = exports.PfTooltip = function (_HTMLElement) {
           _this4._checkPlacement();
           _this4._showTooltip();
           //notify frameworks
-          _this4.dispatchEvent(new CustomEvent('tooltipOpened', {}));
+          _this4.dispatchEvent(new CustomEvent('pf-tooltip.opened', {}));
         }
       }, 20);
     }
@@ -413,7 +413,7 @@ var PfTooltip = exports.PfTooltip = function (_HTMLElement) {
           setTimeout(function () {
             _this5._removeTooltip();
             //notify frameworks
-            _this5.dispatchEvent(new CustomEvent('tooltipClosed', {}));
+            _this5.dispatchEvent(new CustomEvent('pf-tooltip.closed', {}));
             // reset position after tooltip is closed
             _this5._placement = _this5.getAttribute('placement') ? _this5.getAttribute('placement') : 'right';
           }, _this5._duration);

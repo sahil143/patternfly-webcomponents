@@ -55,7 +55,7 @@ export class PfTooltip extends HTMLElement {
     this.init();
 
     //handleContentChanged
-    this.element.addEventListener('handleContentChanged', (e) => {
+    this.element.addEventListener('pf-tooltip.handleContentChanged', (e) => {
       this.init();
     }, false);
   }
@@ -94,7 +94,7 @@ export class PfTooltip extends HTMLElement {
    */
   setInnerHtml(html) {
     this._innerHtml = html;
-    this.element.dispatchEvent(new CustomEvent('handleContentChanged', {}));
+    this.element.dispatchEvent(new CustomEvent('pf-tooltip.handleContentChanged', {}));
   }
 
   /**
@@ -237,7 +237,7 @@ export class PfTooltip extends HTMLElement {
         this._checkPlacement();
         this._showTooltip();
         //notify frameworks
-        this.dispatchEvent(new CustomEvent('tooltipOpened', {}));
+        this.dispatchEvent(new CustomEvent('pf-tooltip.opened', {}));
       }
     }, 20 );
   }
@@ -253,7 +253,7 @@ export class PfTooltip extends HTMLElement {
         setTimeout(() => {
           this._removeTooltip();
           //notify frameworks
-          this.dispatchEvent(new CustomEvent('tooltipClosed', {}));
+          this.dispatchEvent(new CustomEvent('pf-tooltip.closed', {}));
           // reset position after tooltip is closed
           this._placement = this.getAttribute('placement') ? this.getAttribute('placement') : 'right';
         }, this._duration);
