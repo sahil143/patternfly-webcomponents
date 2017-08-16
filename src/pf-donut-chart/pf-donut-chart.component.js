@@ -9,8 +9,20 @@ export class PfDonutChart extends HTMLElement {
    */
   connectedCallback() {
     let data = JSON.parse(this.getAttribute('data').replace(/'/g, '"'));
+    this._width = parseInt(this.getAttribute('width')) ? this.getAttribute('width') : null;
+    this._height = parseInt(this.getAttribute('height')) ? this.getAttribute('height') : 171;
+    this._legend = this.getAttribute('legend') ? JSON.parse(this.getAttribute('legend').replace(/'/g, '"')) : { show: false };
     this._targetSelector = this.getAttribute('target-selector');
+    this._title = this.getAttribute('title') ? this.getAttribute('title') : '';
+    this._showTooltip = this.getAttribute('show-tooltip') ? this.getAttribute('show-tooltip') : false;
     this.data(data);
+  }
+
+  /*
+   * Only attributes listed in the observedAttributes property will receive this callback
+   */
+  static get observedAttributes() {
+    return ['width', 'height', 'legend', 'target-selector', 'title', 'data'];
   }
 
   /**
@@ -29,6 +41,89 @@ export class PfDonutChart extends HTMLElement {
    */
   constructor() {
     super();
+  }
+
+  /**
+   *
+   */
+  get width() {
+    return this._width;
+  }
+
+  /**
+   *
+   */
+  set width(value) {
+    if (this._width !== value) {
+      this._width = value;
+      this.setAttribute('width', value);
+    }
+  }
+
+  /**
+   *
+   */
+  get height() {
+    return this._height;
+  }
+
+  /**
+   *
+   */
+  set height(value) {
+    if (this._height !== value) {
+      this._height = value;
+      this.setAttribute('height', value);
+    }
+  }
+
+  /**
+   *
+   */
+  get legend() {
+    return this._legend;
+  }
+
+  /**
+   *
+   */
+  set legend(value) {
+    this._legend = value;
+    this._buildChart();
+  }
+
+  /**
+   *
+   */
+  get title() {
+    return this._title;
+  }
+
+  /**
+   *
+   */
+  set title(value) {
+    if (this._title !== value) {
+      this._title = value;
+      this.setAttribute('title', value);
+    }
+  }
+
+  /**
+   *
+   */
+  get targetSelector() {
+    return this._targetSelector;
+  }
+
+  /**
+   *
+   */
+  set targetSelector(value) {
+    if (this._targetSelector !== value) {
+      this._targetSelector = value;
+      this.setAttribute('target-selector', value);
+    }
   }
 
   /**
@@ -83,22 +178,50 @@ export class PfDonutChart extends HTMLElement {
   /**
    *
    */
-  _buildChart() {
-    this.donutChart = c3.generate({
+  prepareChart() {
+    return {
       bindto: this._targetSelector,
-      data: this.data
-    });
+      data: this.data,
+      donut: {
+        title: this._title,
+        label: {
+          show: false
+        },
+        width: 11
+      },
+      color: {
+        pattern: [
+          '#d1d1d1',
+          '#0088ce'
+        ]
+      },
+      size: {
+        width: this._width,
+        height: this._height
+      },
+      legend: this._legend,
+      tooltip: {
+        show: this._showTooltip
+      }
+    };
   }
 
   /**
    *
+   */
+  _buildChart() {
+    this.donutChart = c3.generate(this.prepareChart());
+  }
+
+  /**
+   *TO DO: test
    */
   load(obj) {
     this.donutChart.load(obj);
   }
 
   /**
-   *
+   *TO DO: test
    */
   unload(obj) {
     this.donutChart.unload(obj);
