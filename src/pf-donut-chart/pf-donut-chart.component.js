@@ -1,3 +1,5 @@
+import {pfChartUtil} from 'pf-chart-utils.js';
+
 /**
  *
  */
@@ -8,14 +10,18 @@ export class PfDonutChart extends HTMLElement {
    *
    */
   connectedCallback() {
-    let data = JSON.parse(this.getAttribute('data').replace(/'/g, '"'));
+    this._additionalData = this.getAttribute('data') ? JSON.parse(this.getAttribute('data').replace(/'/g, '"')): {};
     this._width = parseInt(this.getAttribute('width')) ? this.getAttribute('width') : null;
     this._height = parseInt(this.getAttribute('height')) ? this.getAttribute('height') : 171;
     this._legend = this.getAttribute('legend') ? JSON.parse(this.getAttribute('legend').replace(/'/g, '"')) : { show: false };
     this._targetSelector = this.getAttribute('target-selector');
     this._title = this.getAttribute('title') ? this.getAttribute('title') : '';
-    this._showTooltip = this.getAttribute('show-tooltip') ? this.getAttribute('show-tooltip') : false;
-    this.data(data);
+    this._colors = this.getAttribute('data-colors') ? JSON.parse(this.getAttribute('data-colors').replace(/'/g, '"')) : {};
+    this._getData();
+    this.prepareData();
+    this.tooltip = {
+      show: false
+    };
   }
 
   /*
@@ -127,47 +133,121 @@ export class PfDonutChart extends HTMLElement {
   }
 
   /**
+   * data object
+   */
+  get data() {
+    return this._data;
+  }
+
+  /**
+   * set data object for c3
+   * @param {*} func
+   */
+  set data(obj) {
+    this._data = obj;
+    this._buildChart();
+  }
+
+  /**
+   *
+   * @param {*} func
+   */
+  get colors() {
+    return this._colors;
+  }
+
+  /**
+   *
+   * @param {*} func
+   */
+  set colors(obj) {
+    this._colors = obj;
+    this._buildChart();
+  }
+
+  /**
    *
    */
-  data(data) {
-    console.log(data);
-    switch (data[0]) {
+  get tooltip () {
+    return this.tooltip;
+  }
+
+  /**
+   *
+   */
+  set tooltip (obj) {
+    this._tooltip = obj;
+    this._buildChart();
+  }
+
+  /**
+   *
+   */
+  _onmouseover() {
+    console.log(this.onmouseover());
+  }
+
+  _getData(){
+    if(this.getAttribute('columns')){
+      this._inputData = JSON.parse(this.getAttribute('columns').replace(/'/g, '"'));
+      this._dataFormat = 'columns';
+    } else if(this.getAttribute('rows')) {
+      this._inputData = JSON.parse(this.getAttribute('rows').replace(/'/g, '"'));
+      this._dataFormat = 'rows';
+    } else if(this.getAttribute('json')) {
+     this._inputData = JSON.parse(this.getAttribute('json').replace(/'/g, '"'));
+      this._dataFormat = 'json'; 
+    } else if(this.getAttribute('url')) {
+      this._inputData = this.getAttribute('url');
+      this._dataFormat = 'url';
+    }
+  }
+
+  /**
+   *
+   */
+  prepareData() {
+    switch (this._dataFormat) {
       case 'column':
-        this.data = {
-          columns: data[1],
-          type: 'donut'
+        this._data = {
+          columns: this._inputData,
+          type: 'donut',
+          colors: this._colors,
+          ...this._additionalData
         };
         break;
 
       case 'row':
-        this.data = {
-          rows: data[1],
-          type: 'donut'
+        this._data = {
+          rows: this._inputData,
+          type: 'donut',
+          colors: this._colors,
+          ...this._additionalData
         };
         break;
 
       case 'json':
         //To Do: find a way to get keys from user
-        this.data = {
-          json: data[1],
+        this._data = {
+          json: this._inputData,
           type: 'donut',
-          keys: {
-            value: ['data1', 'data2', 'data3']
-          }
+          ...this._additionalData
         };
         break;
 
       case 'url':
-        if (/js/.test(data[1])) {
-          this.data = {
-            url: data[1],
+        if (/.json/.test(data[1])) {
+          this._data = {
+            url: this._inputData,
             type: 'donut',
-            mimeType: 'json'
+            mimeType: 'json',
+            ...this._additionalData
           };
         } else {
-          this.data = {
-            url: data[1],
+          this._data = {
+            url: this._inputData,
             type: 'donut',
+            ...this._additionalData
           };
         }
         break;
@@ -179,9 +259,9 @@ export class PfDonutChart extends HTMLElement {
    *
    */
   prepareChart() {
-    return {
+    let config =  {
       bindto: this._targetSelector,
-      data: this.data,
+      data: this._data,
       donut: {
         title: this._title,
         label: {

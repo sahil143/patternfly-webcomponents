@@ -16,7 +16,10 @@
   <div id="chart4"></div>
 
 
-  <pf-donut-chart id="donut" title="donut" target-selector="#chart" legend="{ 'show': true, 'position': 'right'}" data="['column', [['data1', 100, 200, 150, 300, 200], ['data2', 400, 500, 250, 700, 300]]]"></pf-donut-chart>
+  <pf-donut-chart id="donut" title="donut" target-selector="#chart" legend="{ 'show': true, 'position': 'right'}" columns="[['data1', 100, 200, 150, 300, 200], ['data2', 400, 500, 250, 700, 300]]" data="{'groups': [
+    ['data1', 'data2'],
+    ['data3']
+  ]}"></pf-donut-chart>
   <!--<pf-donut-chart target-selector="#chart1" data="['row', [['data1', 'data2', 'data3'],[90, 120, 300],[40, 160, 240],[50, 200, 290]]]" ></pf-donut-chart>
   <pf-donut-chart target-selector="#chart2" data="['json', [{'name': 'www.site1.com', 'data1': 200, 'data2': 200, 'data3': 400}, {'name': 'www.site2.com', 'data1': 100, 'data2': 300, 'data3': 400}]]" ></pf-donut-chart>
   <pf-donut-chart target-selector="#chart3" data="['url', 'https://gist.githubusercontent.com/sahil143/0a8dbe79028a673d4b87d7fdf1d0c098/raw/6e2f599e92c3bd804d0bff347804a0b12b994803/test.csv']" ></pf-donut-chart>
@@ -29,9 +32,17 @@
   <script src="../../dist/js/patternfly.js"></script>
   <script>
     let donut = document.querySelector('#donut');
-    donut.tooltip = function (d, defaultTitleFormat, defaultValueFormat, color) {
+   /* donut.tooltip = function (d, defaultTitleFormat, defaultValueFormat, color) {
       console.log("passed");
     }
+    donut.onmouseover = function (d, i) {
+      console.log('onmouseover real');
+    };
+    setTimeout(function() {donut.legend = {
+      show: true,
+      position: 'bottom'
+    }
+    }, 10000);*/
    /* setTimeout(function(){
       donut.data(['column', [['data1', 100, 200, 150, 300, 200], ['data2', 400, 500, 250, 700, 300]]]);
     }, 10000);*/
