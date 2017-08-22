@@ -19,6 +19,15 @@ class PfChartUtil {
   }
 
   /**
+   * replace single quotes with double while parsing JSON strings
+   * @param  e this
+   * @param {string} attribute attribute's name
+   */
+  getJSONAttribute(e, attribute) {
+    return JSON.parse(e.getAttribute(attribute).replace(/'/g, '"'));
+  }
+
+  /**
    * c3 load function
    * @param {} chart
    * @param {object} obj
