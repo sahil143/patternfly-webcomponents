@@ -526,9 +526,21 @@ var PfChartUtil = function () {
 
 
   _createClass(PfChartUtil, [{
-    key: "generate",
+    key: 'generate',
     value: function generate(config) {
       return c3.generate(config);
+    }
+
+    /**
+     * replace single quotes with double while parsing JSON strings
+     * @param  e this
+     * @param {string} attribute attribute's name
+     */
+
+  }, {
+    key: 'getJSONAttribute',
+    value: function getJSONAttribute(e, attribute) {
+      return JSON.parse(e.getAttribute(attribute).replace(/'/g, '"'));
     }
 
     /**
@@ -538,7 +550,7 @@ var PfChartUtil = function () {
      */
 
   }, {
-    key: "load",
+    key: 'load',
     value: function load(chart, obj) {
       chart.load(obj);
     }
@@ -550,7 +562,7 @@ var PfChartUtil = function () {
      */
 
   }, {
-    key: "unload",
+    key: 'unload',
     value: function unload(chart, obj) {
       chart.unload(obj);
     }
@@ -5912,13 +5924,13 @@ var PfDonutChart = exports.PfDonutChart = function (_HTMLElement) {
      * Reinitializes with attribute values and resets content
      */
     value: function init() {
-      this._additionalData = this.getAttribute('data') ? JSON.parse(this.getAttribute('data').replace(/'/g, '"')) : {};
+      this._additionalData = this.getAttribute('data') ? _pfChartUtils.pfChartUtil.getJSONAttribute(this, 'data') : {};
       this._width = parseInt(this.getAttribute('width')) ? this.getAttribute('width') : null;
       this._height = parseInt(this.getAttribute('height')) ? this.getAttribute('height') : 171;
-      this._legend = this.getAttribute('legend') ? JSON.parse(this.getAttribute('legend').replace(/'/g, '"')) : { show: false };
+      this._legend = this.getAttribute('legend') ? _pfChartUtils.pfChartUtil.getJSONAttribute(this, 'legend') : { show: false };
       this._targetSelector = this.getAttribute('target-selector');
       this._title = this.getAttribute('title') ? this.getAttribute('title') : '';
-      this._colors = this.getAttribute('colors') ? JSON.parse(this.getAttribute('colors').replace(/'/g, '"')) : {};
+      this._colors = this.getAttribute('colors') ? _pfChartUtils.pfChartUtil.getJSONAttribute(this, 'colors') : {};
       this._getData();
       this._prepareData();
     }
@@ -6016,13 +6028,13 @@ var PfDonutChart = exports.PfDonutChart = function (_HTMLElement) {
     key: '_getData',
     value: function _getData() {
       if (this.getAttribute('columns')) {
-        this._inputData = JSON.parse(this.getAttribute('columns').replace(/'/g, '"'));
+        this._inputData = _pfChartUtils.pfChartUtil.getJSONAttribute(this, 'columns');
         this._dataFormat = 'columns';
       } else if (this.getAttribute('rows')) {
-        this._inputData = JSON.parse(this.getAttribute('rows').replace(/'/g, '"'));
+        this._inputData = _pfChartUtils.pfChartUtil.getJSONAttribute(this, 'rows');
         this._dataFormat = 'rows';
       } else if (this.getAttribute('json')) {
-        this._inputData = JSON.parse(this.getAttribute('json').replace(/'/g, '"'));
+        this._inputData = _pfChartUtils.pfChartUtil.getJSONAttribute(this, 'json');
         this._dataFormat = 'json';
       } else if (this.getAttribute('url')) {
         this._inputData = this.getAttribute('url');

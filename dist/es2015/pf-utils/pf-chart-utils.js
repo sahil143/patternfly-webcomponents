@@ -1,4 +1,4 @@
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
   value: true
@@ -26,9 +26,21 @@ var PfChartUtil = function () {
 
 
   _createClass(PfChartUtil, [{
-    key: "generate",
+    key: 'generate',
     value: function generate(config) {
       return c3.generate(config);
+    }
+
+    /**
+     * replace single quotes with double while parsing JSON strings
+     * @param  e this
+     * @param {string} attribute attribute's name
+     */
+
+  }, {
+    key: 'getJSONAttribute',
+    value: function getJSONAttribute(e, attribute) {
+      return JSON.parse(e.getAttribute(attribute).replace(/'/g, '"'));
     }
 
     /**
@@ -38,7 +50,7 @@ var PfChartUtil = function () {
      */
 
   }, {
-    key: "load",
+    key: 'load',
     value: function load(chart, obj) {
       chart.load(obj);
     }
@@ -50,7 +62,7 @@ var PfChartUtil = function () {
      */
 
   }, {
-    key: "unload",
+    key: 'unload',
     value: function unload(chart, obj) {
       chart.unload(obj);
     }
