@@ -29,7 +29,7 @@
                                                                                       ['used', 'available']
                                                                                   ],
                                                                                   'order': null
-                                                                                }" width="200" height "171"></pf-donut-chart>
+                                                                                }" width="200" height="171"></pf-donut-chart>
 
   <pf-donut-chart id="donut1" title=" Animals donut1" target-selector="#chart1" rows="[
                                                                         ['Dogs', 'Cats', 'Fish', 'Hamsters'],
@@ -72,7 +72,7 @@
         '    <td>' + (Math.round(d[0].ratio * 1000) / 10) + '%</td>' +
         '  </tr>' +
         '</table>';
-    }
+    };
 
     // #donut Tooltip Example
     donut.tooltip = {
@@ -82,7 +82,7 @@
           (Math.round(d[0].ratio * 1000) / 10) + '%' + ' MHz ' + d[0].name +
           '</span>';
       }
-    }
+    };
 
     // #donut1
     donut1.colors = {
@@ -101,16 +101,16 @@
     donut2.tooltip = {
       show: true,
       contents: tooltipContent
-    }
+    };
 
     // #donut3
     donut3.legend = {
       show: true
-    }
+    };
 
     donut3.tooltip = {
       show: true
-    }
+    };
 
     donut3.colors = {
       data1: '#0088ce',
@@ -118,7 +118,7 @@
       data3: '#ec7a08',
       data4: '#123455',
       data6: '#abcdef'
-    }
+    };
 
     donut3.onclick(function () {
       alert('clicked on donut3');
