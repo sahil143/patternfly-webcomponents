@@ -54,8 +54,8 @@ var PfDonutChart = exports.PfDonutChart = function (_HTMLElement) {
      */
     value: function init() {
       this._additionalData = this.getAttribute('data') ? _pfChartUtils.pfChartUtil.getJSONAttribute(this, 'data') : {};
-      this._width = parseInt(this.getAttribute('width')) ? this.getAttribute('width') : null;
-      this._height = parseInt(this.getAttribute('height')) ? this.getAttribute('height') : 171;
+      this._width = this.getAttribute('width') ? parseInt(this.getAttribute('width')) : null;
+      this._height = this.getAttribute('height') ? parseInt(this.getAttribute('height')) : 171;
       this._legend = this.getAttribute('legend') ? _pfChartUtils.pfChartUtil.getJSONAttribute(this, 'legend') : { show: false };
       this._targetSelector = this.getAttribute('target-selector');
       this._title = this.getAttribute('title') ? this.getAttribute('title') : '';
@@ -112,6 +112,7 @@ var PfDonutChart = exports.PfDonutChart = function (_HTMLElement) {
 
   /**
    * Get chart width
+   * @returns {number}
    */
 
 
@@ -301,6 +302,7 @@ var PfDonutChart = exports.PfDonutChart = function (_HTMLElement) {
 
     /**
      *  Get chart height
+     * @returns {numbers}
      */
 
   }, {
@@ -322,6 +324,7 @@ var PfDonutChart = exports.PfDonutChart = function (_HTMLElement) {
 
     /**
      * Get charts legend
+     * @returns {object}
      */
 
   }, {
@@ -342,6 +345,7 @@ var PfDonutChart = exports.PfDonutChart = function (_HTMLElement) {
 
     /**
      * Get chart title
+     * @returns {string} title of donut
      */
 
   }, {
@@ -364,6 +368,7 @@ var PfDonutChart = exports.PfDonutChart = function (_HTMLElement) {
 
     /**
      * Get target-selector
+     * @returns {string} target to which chart is binded
      */
 
   }, {
@@ -386,6 +391,7 @@ var PfDonutChart = exports.PfDonutChart = function (_HTMLElement) {
 
     /**
      * get additional data
+     * @returns {object}
      */
 
   }, {
@@ -406,6 +412,7 @@ var PfDonutChart = exports.PfDonutChart = function (_HTMLElement) {
 
     /**
      * get colors
+     * @returns {object}
      */
 
   }, {
@@ -426,6 +433,7 @@ var PfDonutChart = exports.PfDonutChart = function (_HTMLElement) {
 
     /**
      * get c3 tooltip object
+     * @returns {object}
      */
 
   }, {

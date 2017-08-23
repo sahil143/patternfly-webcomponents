@@ -33,8 +33,8 @@ export class PfDonutChart extends HTMLElement {
    */
   init() {
     this._additionalData = this.getAttribute('data') ? pfChartUtil.getJSONAttribute(this, 'data') : {};
-    this._width = parseInt(this.getAttribute('width')) ? this.getAttribute('width') : null;
-    this._height = parseInt(this.getAttribute('height')) ? this.getAttribute('height') : 171;
+    this._width = this.getAttribute('width') ? parseInt(this.getAttribute('width')) : null;
+    this._height = this.getAttribute('height') ? parseInt(this.getAttribute('height')) : 171;
     this._legend = this.getAttribute('legend') ? pfChartUtil.getJSONAttribute(this, 'legend') : { show: false };
     this._targetSelector = this.getAttribute('target-selector');
     this._title = this.getAttribute('title') ? this.getAttribute('title') : '';
@@ -77,6 +77,7 @@ export class PfDonutChart extends HTMLElement {
 
   /**
    * Get chart width
+   * @returns {number}
    */
   get width() {
     return this._width;
@@ -94,6 +95,7 @@ export class PfDonutChart extends HTMLElement {
 
   /**
    *  Get chart height
+   * @returns {numbers}
    */
   get height() {
     return this._height;
@@ -111,6 +113,7 @@ export class PfDonutChart extends HTMLElement {
 
   /**
    * Get charts legend
+   * @returns {object}
    */
   get legend() {
     return this._legend;
@@ -127,6 +130,7 @@ export class PfDonutChart extends HTMLElement {
 
   /**
    * Get chart title
+   * @returns {string} title of donut
    */
   get title() {
     return this._title;
@@ -145,6 +149,7 @@ export class PfDonutChart extends HTMLElement {
 
   /**
    * Get target-selector
+   * @returns {string} target to which chart is binded
    */
   get targetSelector() {
     return this._targetSelector;
@@ -163,6 +168,7 @@ export class PfDonutChart extends HTMLElement {
 
   /**
    * get additional data
+   * @returns {object}
    */
   get data() {
     return this._additionalData;
@@ -179,6 +185,7 @@ export class PfDonutChart extends HTMLElement {
 
   /**
    * get colors
+   * @returns {object}
    */
   get colors() {
     return this._colors;
@@ -195,6 +202,7 @@ export class PfDonutChart extends HTMLElement {
 
   /**
    * get c3 tooltip object
+   * @returns {object}
    */
   get tooltip() {
     return this._tooltip;
