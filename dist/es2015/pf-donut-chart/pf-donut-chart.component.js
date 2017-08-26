@@ -302,7 +302,7 @@ var PfDonutChart = exports.PfDonutChart = function (_HTMLElement) {
 
     /**
      *  Get chart height
-     * @returns {numbers}
+     * @returns {number}
      */
 
   }, {
