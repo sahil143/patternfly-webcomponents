@@ -95,7 +95,7 @@ export class PfDonutChart extends HTMLElement {
 
   /**
    *  Get chart height
-   * @returns {numbers}
+   * @returns {number}
    */
   get height() {
     return this._height;
